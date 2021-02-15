@@ -10,14 +10,25 @@ source:
   sha256: 6175f90d9fa64c4d939bdbb3e8511ae0ee2134863a2c7bf8d9733819efa6e159
 
 build:
+{% if bootstrapping == 'yes' %}
+  # Please increment by two
   number: 0
+  string: h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}_bootstrapping
+{% else %}
+  # Keep above the number of the _bootstrapping package
+  number: 1
+{% endif %}
   skip: True  # [win]
+  script_env:
+    - BOOTSTRAPPING={{ bootstrapping }}
 
 requirements:
+{% if bootstrapping != 'yes' %}
   build:
     - autoconf
   run:
     - autoconf
+{% endif %}
 
 test:
   commands:
